@@ -1,1 +1,3 @@
 # kubernates-schedular
+
+Scheduling a Pod on a particular node in Kubernetes means telling the kube-scheduler where your Pod is allowed or preferred to run. By default, Kubernetes automatically places Pods on any available node based on resources, but when you want control (for example, run a Pod only on SSD nodes or GPU nodes), you add constraints in the Pod specification. The scheduler then works in two main steps: first, it filters out nodes that do not match your conditions, and then it scores the remaining nodes to pick the best one. This is why we usually don’t directly assign nodes—instead, we guide the scheduler.
