@@ -1,3 +1,5 @@
+#kubectl label nodes node1 disktype=ssd
+
 apiVersion: v1
 kind: Pod
 metadata:
