@@ -7,3 +7,42 @@ Internally, the scheduler works in stages. First is the filtering phase, where i
 In real-world usage, we control scheduling behavior rather than replacing it. The simplest method is using nodeSelector, where Pods are assigned to nodes with specific labels. For more flexibility, node affinity allows defining advanced rules such as “must run” or “prefer to run” on certain nodes. Taints and tolerations work in the opposite direction by restricting nodes so that only specific Pods can run on them, which is useful for dedicated workloads like GPUs or databases. Additionally, resource requests (CPU and memory) play a critical role, as the scheduler uses them to ensure a node has enough capacity before placing a Pod.
 
 In cases where default scheduling logic is not sufficient, Kubernetes allows the use of a custom scheduler. This involves running another scheduler alongside the default one and configuring Pods to use it via the schedulerName field. A custom scheduler can implement organization-specific logic, such as cost optimization, priority handling, or specialized hardware awareness. However, in most DevOps scenarios, engineers rely on the default scheduler and control placement using labels, affinity rules, and resource configurations rather than building a scheduler from scratch.
+
+🔷 1. What happens during scheduling?
+
+When you create a Pod:
+
+It is created without a node (Pending state).
+The scheduler:
+Filters nodes → removes unsuitable ones
+Scores remaining nodes → ranks them
+The best node is selected and the Pod is assigned.
+🔷 2. Filtering vs Scoring (VERY IMPORTANT)
+✅ Filtering (Hard Rules)
+
+Filtering checks "Can this Pod run on this node?"
+
+If a node fails → ❌ removed
+If passes → ✅ kept
+
+Examples:
+
+Not enough CPU/memory
+Node label mismatch
+Node taints not tolerated
+Node affinity rules not satisfied
+
+👉 Think: ELIMINATION ROUND
+
+✅ Scoring (Soft Preferences)
+
+Scoring checks "Which node is BEST?"
+
+Each node gets a score (0–100)
+Highest score wins
+
+Examples:
+
+Prefer nodes with less load
+Prefer certain regions/zones
+Prefer spreading pods
